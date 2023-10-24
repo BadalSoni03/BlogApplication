@@ -1,8 +1,7 @@
 const Blog = require('../Models/BlogModel');
 const User = require('../Models/UserModel');
-const mongoose = require('mongoose');
 
-// POST Controllers
+//--------------------------POST Controllers-------------------------//
 
 const createBlogController = async function (req , res) { 
 	try {
@@ -34,7 +33,7 @@ const createBlogController = async function (req , res) {
 	} catch (error) {
 		return res.status(501).send({
 			success : false,
-			message : 'Error in create API',
+			message : 'Error in createBlogController',
 			error : error.message
 		});
 	}
@@ -53,14 +52,15 @@ const likeBlogController = async function (req , res) {
 	} catch (error) {
 		return res.status(501).send({
 			success : false,
-			message : 'Error in likeBlogController API',
+			message : 'Error in likeBlogController',
 			error : error.message
 		});
 	}
-}
+};
 
 
-// GET controllers
+//----------------------------GET Controllers-------------------------//
+
 const getAllBlogsOfAUserController = async function (req , res) {
 	try {
 		const {author} = req.body;
@@ -81,7 +81,7 @@ const getAllBlogsOfAUserController = async function (req , res) {
 	} catch (error) {
 		return res.status(501).send({
 			success : false,
-			message : 'Error in getAllBlogsOfAUser API',
+			message : 'Error in getAllBlogsOfAUser',
 			error : error.message
 		});
 	}
