@@ -7,7 +7,12 @@ const {
 	likeBlogController
 } = require('../Controllers/blogController');
 
+//-------------------------POST APIs-------------------------//
 router.post('/create' , isAuth , createBlogController);
 router.post('/like/:id' , isAuth , likeBlogController);
+
+//-------------------------GET APIs--------------------------//
 router.get('/fetch', getAllBlogsOfAUserController);
+
+
 module.exports = router;
