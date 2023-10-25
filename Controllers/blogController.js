@@ -39,6 +39,8 @@ const createBlogController = async function (req , res) {
 	}
 };
 
+// This is basically the toggle like function like instagram. A user can like a blog only once
+// and if the user again tries to like the blog then it automatically unlikes (toggle) the blog.
 const likeBlogController = async function (req , res) {
 	try {
 		const {username , id} = req.params;
