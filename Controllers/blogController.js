@@ -1,5 +1,6 @@
 const Blog = require('../Models/BlogModel');
 const User = require('../Models/UserModel');
+const mongoose = require('mongoose');
 
 //--------------------------POST Controllers-------------------------//
 
@@ -15,12 +16,10 @@ const createBlogController = async function (req , res) {
 			});
 		}
 		const timeOfCreation = Date.now();
-		const like = 0;
-		const blog = new Blog({
+		const blog = await Blog.create({
 			title,
 			body,
 			author,
-			like,
 			timeOfCreation
 		});
 
@@ -33,7 +32,7 @@ const createBlogController = async function (req , res) {
 	} catch (error) {
 		return res.status(501).send({
 			success : false,
-			message : 'Error in createBlogController',
+			message : 'Error in create API',
 			error : error.message
 		});
 	}
@@ -41,29 +40,44 @@ const createBlogController = async function (req , res) {
 
 const likeBlogController = async function (req , res) {
 	try {
-		const uniqueID = req.params.id; 
-		const blog = await Blog.findById(uniqueID);
-		blog.likes++;
-		await blog.save();
+		const {username , id} = req.params;
+		const blog = await Blog.findById(id);
+		if (!blog) {
+			return res.status(401).send({
+				success : false,
+				message : 'No such blog exist'
+			});
+		}
+		let likedBlogs = blog.likes;
+		if (likedBlogs.length && likedBlogs.includes(username)) {
+			likedBlogs = likedBlogs.filter(user => user !== username);
+		} else {
+			likedBlogs.push(username);
+		}
+		blog.likes = likedBlogs;
+		await blog.save(); 
 		return res.status(201).send({
 			success : true,
-			message : 'successfully liked the blog'
+			message : 'Liked successfully',
+			likes : blog.likes
 		});
-	} catch (error) {
+
+	} catch (error) { 
+		console.log(error.message);
 		return res.status(501).send({
 			success : false,
-			message : 'Error in likeBlogController',
+			message : 'Error in likeBlogController API',
 			error : error.message
 		});
 	}
-};
+}
 
 
 //----------------------------GET Controllers-------------------------//
 
 const getAllBlogsOfAUserController = async function (req , res) {
 	try {
-		const {author} = req.body;
+		const author = req.params.username;
 		const userFound = await User.findOne({username : author});
 		if (!userFound) {
 			return res.status(401).send({
@@ -81,7 +95,7 @@ const getAllBlogsOfAUserController = async function (req , res) {
 	} catch (error) {
 		return res.status(501).send({
 			success : false,
-			message : 'Error in getAllBlogsOfAUser',
+			message : 'Error in getAllBlogsOfAUser API',
 			error : error.message
 		});
 	}
