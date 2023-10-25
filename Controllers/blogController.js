@@ -2,6 +2,7 @@ const Blog = require('../Models/BlogModel');
 const User = require('../Models/UserModel');
 const mongoose = require('mongoose');
 
+
 //--------------------------POST Controllers-------------------------//
 
 const createBlogController = async function (req , res) { 
@@ -41,7 +42,7 @@ const createBlogController = async function (req , res) {
 const likeBlogController = async function (req , res) {
 	try {
 		const {username , id} = req.params;
-		const blog = await Blog.findById(id);
+		const blog = await Blog.findById({_id : id});
 		if (!blog) {
 			return res.status(401).send({
 				success : false,
@@ -51,17 +52,17 @@ const likeBlogController = async function (req , res) {
 		let likedBlogs = blog.likes;
 		if (likedBlogs.length && likedBlogs.includes(username)) {
 			likedBlogs = likedBlogs.filter(user => user !== username);
-		} else {
+		}  else {
 			likedBlogs.push(username);
 		}
 		blog.likes = likedBlogs;
-		await blog.save(); 
+		await blog.save();
 		return res.status(201).send({
 			success : true,
 			message : 'Liked successfully',
-			likes : blog.likes
+			likesCount : blog.likes.length,
+			likedBy : blog.likes
 		});
-
 	} catch (error) { 
 		console.log(error.message);
 		return res.status(501).send({
@@ -101,9 +102,27 @@ const getAllBlogsOfAUserController = async function (req , res) {
 	}
 };
 
+const getAllUsersController = async function (req , res) {
+	try {
+		const allUsers = await User.find({}); 
+		return res.status(201).send({
+			success : true,
+			message : 'User fetched successfully',
+			users : allUsers
+		});
+
+	} catch (error) {
+		return res.status(501).send({
+			success : false,
+			message : 'Error in getAllUsersController API',
+			error : error.message
+		});
+	}
+}
 
 module.exports = {
 	createBlogController,
 	getAllBlogsOfAUserController,
-	likeBlogController
+	likeBlogController,
+	getAllUsersController
 };
