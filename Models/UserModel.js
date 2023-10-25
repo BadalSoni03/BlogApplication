@@ -19,13 +19,8 @@ const userSchema = new mongoose.Schema({
 		required : true,
 		unique : true,
 		trime : true
-	}, 
-	role : {
-		type : String,
-		enum : ['user' , 'admin'],
-		default : 'user'
 	},
-	blogs : [{type : mongoose.Types.ObjectId , required : true}],
+	blogs : [{type : mongoose.Types.ObjectId , ref : "BlogModel" , required : true}],
 	tokens : [{type : Object}] 
 },
 {timespamps : true}
