@@ -14,13 +14,17 @@ const userSchema = new mongoose.Schema({
 		required : true,
 		trim : true
 	},
+	isAdmin : {
+		type : Boolean,
+		default : false
+	},
 	email : {
 		type : String,
 		required : true,
 		unique : true,
 		trime : true
 	},
-	blogs : [{type : mongoose.Types.ObjectId , ref : "BlogModel" , required : true}],
+	blogs : [{type : mongoose.Types.ObjectId , ref : 'BlogModel' , required : true}],
 	tokens : [{type : Object}] 
 },
 {timespamps : true}
