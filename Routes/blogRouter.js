@@ -9,10 +9,10 @@ const {
 
 //-------------------------POST APIs-------------------------//
 router.post('/create' , isAuth , createBlogController);
-router.post('/like/:id' , isAuth , likeBlogController);
+router.post('/like/:username/:id' , isAuth , likeBlogController);
 
 //-------------------------GET APIs--------------------------//
-router.get('/fetch', getAllBlogsOfAUserController);
+router.get('/fetch/:username', getAllBlogsOfAUserController);
 
 
 module.exports = router;
