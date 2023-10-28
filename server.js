@@ -1,9 +1,10 @@
-const express = require("express");
-const dotenv = require("dotenv"); 
-const cors = require("cors");
+const express = require('express');
+const dotenv = require('dotenv'); 
+const cors = require('cors');
 const connectToDB = require("./Config/db");
 const authRouter = require('./Routes/authRouter');
 const blogRouter = require('./Routes/blogRouter');
+const userRouter = require('./Routes/userRouter');
 dotenv.config();
 connectToDB()
 
@@ -19,3 +20,4 @@ app.listen(port , () => {
 
 app.use('/auth' , authRouter);
 app.use('/blog' , blogRouter);
+app.use('/user' , userRouter);
