@@ -1,5 +1,8 @@
 const JWT = require("jsonwebtoken");
-const User = require("../Models/UserModel");
+const User = require("../Models/User");
+
+
+//--------------------------POST Controllers-------------------------//
 
 const registerController = async function (req , res) {
 	const {username , email , password} = req.body;
