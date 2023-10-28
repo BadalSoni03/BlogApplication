@@ -6,18 +6,81 @@ const {
 	createBlogController,
 	getAllBlogsOfAUserController,
 	likeBlogController,
-	getAllUsersController
+	deleteBlogController,
+	updateBlogController,
+	bookMarkBlogController
 } = require('../Controllers/blogController');
 
-//-------------------------POST APIs-------------------------//
+
+//-------------------------POST APIs--------------------------//
+
+
+/*
+	@desc : creates the blog 
+	@API  : Public API
+	@method : post
+	@request : http post request
+*/
 
 router.post('/create' , isAuth , createBlogController);
+
+/*
+	@desc : 'username' likes the blog of blog id 'id' 
+	@API  : Public API
+	@method : post
+	@request : http post request
+*/
+
 router.post('/like/:username/:id' , isAuth , likeBlogController);
 
+/*
+	@desc : bookmarks the blog of blog id 'blogID' 
+	@API  : Public API
+	@method : post
+	@request : http post request
+*/
 
-//-------------------------GET APIs--------------------------//
+router.post('/bookmark/:blogID' , isAuth , bookMarkBlogController);
+
+
+//-------------------------GET APIs---------------------------//
+
+
+/*
+	@desc : fetches all the blog of 'username' 
+	@API  : Public API
+	@method : get
+	@request : http get request
+	@note : No need for middleware as anyone can view the blogs of a user
+*/
 
 router.get('/fetch/:username', getAllBlogsOfAUserController);
-router.get('/all-users', allowedToAdmin , getAllUsersController);
+
+
+//-------------------------DELETE APIs-------------------------//
+
+
+/*
+	@desc : deletes the blog of blog 'blogID'
+	@API  : Public API
+	@method : delete
+	@request : http delete request
+*/
+
+
+router.delete('/delete/:blogID' , isAuth , deleteBlogController);
+
+
+//---------------------------PUT APIs--------------------------//
+
+
+/*
+	@desc : updates the blog of blog 'blogID'
+	@API  : Public API
+	@method : put
+	@request : http put request
+*/
+
+router.put('/update/:blogID' , isAuth , updateBlogController);
 
 module.exports = router;
