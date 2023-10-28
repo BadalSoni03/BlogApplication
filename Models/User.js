@@ -24,11 +24,13 @@ const userSchema = new mongoose.Schema({
 		unique : true,
 		trime : true
 	},
-	blogs : [{type : mongoose.Types.ObjectId , ref : 'BlogModel' , required : true}],
+	bookMarks : [{type : mongoose.Types.ObjectId , ref : 'Blog' , required : true , default : []}],
+	blogs : [{type : mongoose.Types.ObjectId , ref : 'Blog' , required : true , default : []}],
 	tokens : [{type : Object}] 
-},
-{timespamps : true}
-);
+}, 
+{
+	timespamps : true
+});
 
 userSchema.pre('save' , async function (next) {
 	try {
