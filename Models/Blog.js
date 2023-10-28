@@ -4,15 +4,14 @@ const BlogSchema = new mongoose.Schema({
 	title : {
 		type : String,
 		required : true,
+		unique : true,
 		default : 'Untitled post'
 	},
 	body : {
 		type : String,
 		required : true,
 	},
-	likes : {
-		type : [String]
-	},
+	likes : [String],
 	author : {
 		type : String,
 		required : true
