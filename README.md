@@ -1,20 +1,41 @@
 # BlogApplication
 
-This repository contains the Blog API.
+This is the REST API of blog application. It has all the features which a blog application possess excluding the media posting (images and files). It is ready to use with any front-end with some dependencies configurations.
 
-Functionalities:
+## Authentication
 
-    Authentication , authorization and validation : Jsonwebtoken for authentication and authorization and express-validator for validation
+        url : http://localhost:5000/auth/
+        
+        1. Register (sign-up)
+        2. Login (sign-in)
+        3. Logout (sign-out)
+        4. Stateless jwt authentication (sessions are not used)
 
-    Create blog : User can create blog (if authorized)
+## Blog CRUD
 
-    Delete blog : User can delete some blogs (if authorized)
+        url : http://localhost:5000/blog
+        
+        1. Create blog
+        2. Like blog (toggle feature)
+        3. Bookmark blog
+        4. See all the blogs of a user
+        5. Delete a blog
+        6. Update a blog
 
-    Block user : A user can block another user (if authorized)
+## User CRUD
 
-    Like : User can like the blog of some other user as well (if authorized)
+        url : http://localhost:5000/user
+        
+        1. Fetch all the users in the database
+        2. View the profile of a user
+        3. Delete a user
 
-    Get all blogs of a user : A user can see all the blogs of a user (no need of authorization as this is a get request)
+## Major Dependencies
 
-    Visit the profile of an author (blogger) : A user can see the profile of a user which contains username , email , total likes on all blogs , all blogs of the user. 
-                                               This action does not need any authorization as this is again a get request and data corruption is not possible.
+        1. Mongoose - ORM for MongoDB
+        2. ExpressJs - The core of API
+        3. bcrypt - Used to hash the passwords for storing them in the database
+        4. jsonwebtoken - Used jwt for user authentication
+
+        See package.json for full list of dependencies
+    
