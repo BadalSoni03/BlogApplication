@@ -4,7 +4,7 @@ This is the REST API of blog application. It has all the features which a blog a
 
 ## Authentication
 
-        url : http://localhost:5000/auth/
+        url : http://localhost:5000/auth
         
         1. Register (sign-up)
         2. Login (sign-in)
