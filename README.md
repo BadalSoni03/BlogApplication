@@ -33,12 +33,13 @@ This is the REST API of blog application. It has all the features which a blog a
            of a user          : http://localhost:5000/users/profile
         3. Delete a user      : http://localhost:5000/users/delete-user
 
-## Major Dependencies
+## Major Dependencies and Tools
 
         1. Mongoose - ORM for MongoDB
         2. ExpressJs - The core of API
         3. bcrypt - Used to hash the passwords for storing them in the database
         4. jsonwebtoken - Used jwt for user authentication
-
+        5. Postman - Used postman for API testing
+        
         See package.json for full list of dependencies
     
