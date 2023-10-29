@@ -31,15 +31,14 @@ const viewProfileController = async function (req , res) {
 		const username = req.body.username;
 		const fetchedUser = await User.findOne({username} , {
 			username : 1,
-			email : 1
+			email : 1,
+			blogs : 1
 		});
 		if (fetchedUser) {
-			const allBlogs = await Blog.find({author : username});
 			return res.status(200).send({
 				success : true,
 				message : 'User fetched successfully',
-				user : fetchedUser,
-				blogs : allBlogs
+				user : fetchedUser
 			});
 		} 
 		return res.status(401).send({
