@@ -24,6 +24,7 @@ const createBlogController = async function (req , res) {
 		});
 
 		currentUser.blogs.push(blog);
+		await currentUser.save();
 		return res.status(201).send({
 			success : true,
 			message : 'Blog created successfully',
@@ -40,8 +41,9 @@ const createBlogController = async function (req , res) {
 
 const likeBlogController = async function (req , res) {
 	try {
-		const {username , id} = req.params;
-		const blog = await Blog.findById({_id : id});
+		const blogID = req.params.blogID;
+		const username = req.user.username;
+		const blog = await Blog.findById({_id : blogID});
 		if (!blog) {
 			return res.status(401).send({
 				success : false,
@@ -105,8 +107,8 @@ const bookMarkBlogController = async function (req , res) {
 
 const getAllBlogsOfAUserController = async function (req , res) {
 	try {
-		const author = req.params.username;
-		const userFound = await User.findOne({username : author});
+		const username = req.params.username;
+		const userFound = await User.findOne({username} , {blogs : 1});
 		if (!userFound) {
 			return res.status(401).send({
 				success : false,
@@ -114,7 +116,12 @@ const getAllBlogsOfAUserController = async function (req , res) {
 			});
 		}
 
-		const allBlogs = await Blog.find({author}); 
+		const allBlogs = await Blog.find({author : username} , {
+			author : 1,
+			title : 1,
+			body : 1,
+			likes : 1
+		}); 
 		return res.status(200).send({
 			success : true,
 			message : 'Blogs fetched successfully',
@@ -179,8 +186,7 @@ const updateBlogController = async function (req , res) {
 			message : 'Blog updated successfully',
 			blog : updatedBlog
 		});
-	} catch (error) { 
-		console.log(error.message);
+	} catch (error) {
 		return res.status(501).send({
 			success : false,
 			message : 'Error in updateBlogController Public API',
