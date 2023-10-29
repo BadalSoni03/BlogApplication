@@ -25,13 +25,13 @@ const {
 router.post('/create' , isAuth , createBlogController);
 
 /*
-	@desc : 'username' likes the blog of blog id 'id' 
+	@desc : logged in user likes the blog of blog id 'blogID' 
 	@API  : Public API
 	@method : post
 	@request : http post request
 */
 
-router.post('/like/:username/:id' , isAuth , likeBlogController);
+router.post('/like/:blogID' , isAuth , likeBlogController);
 
 /*
 	@desc : bookmarks the blog of blog id 'blogID' 
