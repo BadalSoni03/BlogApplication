@@ -11,7 +11,11 @@ const BlogSchema = new mongoose.Schema({
 		type : String,
 		required : true,
 	},
-	likes : [String],
+	likes : {
+		type : Map,
+		of : String,
+		default : new Map()
+	},
 	author : {
 		type : String,
 		required : true
