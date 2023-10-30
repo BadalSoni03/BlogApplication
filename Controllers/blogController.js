@@ -51,17 +51,17 @@ const likeBlogController = async function (req , res) {
 			});
 		}
 		let likedBlogs = blog.likes;
-		if (likedBlogs.length && likedBlogs.includes(username)) {
-			likedBlogs = likedBlogs.filter(user => user !== username);
-		}  else {
-			likedBlogs.push(username);
+		if (likedBlogs.size && likedBlogs.has(username)) {
+			likedBlogs.delete(username);
+		} else {
+			likedBlogs.set(username , '1');
 		}
 		blog.likes = likedBlogs;
 		await blog.save();
 		return res.status(201).send({
 			success : true,
 			message : 'Liked successfully',
-			likesCount : blog.likes.length,
+			likesCount : blog.likes.size,
 			likedBy : blog.likes
 		});
 	} catch (error) { 
