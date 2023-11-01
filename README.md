@@ -21,7 +21,7 @@ This is the REST API of blog application. It has all the features which a blog a
         4. All the blogs of
            a user             , GET    : /blog/fetch/:username
         5. Delete a blog      : DELETE : /blog/delete/:blogID
-        6. Update a blog      : PUT    : blog/update/:blogID
+        6. Update a blog      : PUT    : /blog/update/:blogID
 
 ## User CRUD
 
