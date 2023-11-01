@@ -1,37 +1,37 @@
 # BlogApplication
 
-This is the REST API of blog application. It has all the features which a blog application possess excluding the media posting (images and videos) and files. It is ready to use with any front-end after configuring some dependencies. All the end points are tested.
+This is the REST API of blog application. It has all the features which a blog application possess excluding the media posting (images and videos) and files. It is ready to use with any front-end after configuring some dependencies. All the end points are tested. Used stateless JWT authentication. 
 
 ## Authentication
 
-        url : http://localhost:5000/auth
+        end - point : /auth
         
-        1. Register (sign-up) : http://localhost:5000/auth/register
-        2. Login (sign-in)    : http://localhost:5000/auth/login
-        3. Logout (sign-out)  : http://localhost:5000/auth/logout
-        4. Stateless jwt authentication (sessions are not used)
+        1. Register (sign-up) , POST   : /auth/register
+        2. Login (sign-in)    , POST   : /auth/login
+        3. Logout (sign-out)  , POST   : /auth/logout
+        
 
 ## Blog CRUD
 
-        url : http://localhost:5000/blog
+        end - point : /blog
         
-        1. Create blog        : http://localhost:5000/blog/create
-        2. Like blog (toggle) : http://localhost:5000/blog/like/:blogID
-        3. Bookmark blog      : http://localhost:5000/blog/bookmark/:blogID
+        1. Create blog        , POST   : /blog/create
+        2. Like blog (toggle) , POST   : /blog/like/:blogID
+        3. Bookmark blog      , POST   : /blog/bookmark/:blogID
         4. All the blogs of
-           a user             : http://localhost:5000/blog/fetch/:username
-        5. Delete a blog      : http://localhost:5000/blog/delete/:blogID
-        6. Update a blog      : http://localhost:5000/blog/update/:blogID
+           a user             , GET    : /blog/fetch/:username
+        5. Delete a blog      : DELETE : /blog/delete/:blogID
+        6. Update a blog      : PUT    : blog/update/:blogID
 
 ## User CRUD
 
-        url : http://localhost:5000/user
+        end - point : /user
         
         1. Fetch all the  
-           users              : http://localhost:5000/user/all-users
+           users              : GET    : /user/all-users
         2. View the profile 
-           of a user          : http://localhost:5000/users/profile
-        3. Delete a user      : http://localhost:5000/users/delete-user
+           of a user          : GET    : /users/profile
+        3. Delete a user      : DELETE : /users/delete-user
 
 ## Major Dependencies and Tools
 
