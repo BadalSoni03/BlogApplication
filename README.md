@@ -15,23 +15,25 @@ This is the REST API of blog application. It has all the features which a blog a
 
         end - point : /blog
         
-        1. Create blog        , POST   : /blog/create
-        2. Like blog (toggle) , POST   : /blog/like/:blogID
-        3. Bookmark blog      , POST   : /blog/bookmark/:blogID
+        1. Create blog         POST   : /blog/create
+        2. Like blog (toggle)  POST   : /blog/like/:blogID
+        3. Bookmark blog       POST   : /blog/bookmark/:blogID
         4. All the blogs of
-           a user             , GET    : /blog/fetch/:username
-        5. Delete a blog      : DELETE : /blog/delete/:blogID
-        6. Update a blog      : PUT    : /blog/update/:blogID
+           a user              GET    : /blog/fetch/:username
+        5. Specific blog of
+           a user              GET    : /blog/fetch/:username/:blogID
+        6. Delete a blog       DELETE : /blog/delete/:blogID
+        7. Update a blog       PUT    : /blog/update/:blogID
 
 ## User CRUD
 
         end - point : /user
         
         1. Fetch all the  
-           users              : GET    : /user/all-users
+           users               GET    : /user/all-users
         2. View the profile 
-           of a user          : GET    : /users/profile
-        3. Delete a user      : DELETE : /users/delete-user
+           of a user           GET    : /users/profile
+        3. Delete a user       DELETE : /users/delete-user
 
 ## Major Dependencies and Tools
 
