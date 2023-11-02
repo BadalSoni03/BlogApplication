@@ -24,8 +24,12 @@ const userSchema = new mongoose.Schema({
 		unique : true,
 		trime : true
 	},
-	bookMarks : [{type : mongoose.Types.ObjectId , ref : 'Blog' , required : true , default : []}],
-	blogs : [{type : mongoose.Types.ObjectId , ref : 'Blog' , required : true , default : []}],
+	bookMarks : [{type : mongoose.Types.ObjectId , ref : 'Blog' , default : []}],
+	blogs : {
+		type : Map,
+		of : String,
+		default : new Map()
+	},
 	tokens : [{type : Object}] 
 }, 
 {
