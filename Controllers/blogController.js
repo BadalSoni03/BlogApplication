@@ -23,7 +23,7 @@ const createBlogController = async function (req , res) {
 			timeOfCreation
 		});
 
-		currentUser.blogs.push(blog);
+		currentUser.blogs.set(blog._id , '1');
 		await currentUser.save();
 		return res.status(201).send({
 			success : true,
@@ -108,7 +108,7 @@ const bookMarkBlogController = async function (req , res) {
 const getAllBlogsOfAUserController = async function (req , res) {
 	try {
 		const username = req.params.username;
-		const userFound = await User.findOne({username} , {blogs : 1});
+		const userFound = await User.findOne({username});
 		if (!userFound) {
 			return res.status(401).send({
 				success : false,
@@ -136,6 +136,36 @@ const getAllBlogsOfAUserController = async function (req , res) {
 	}
 };
 
+const getParticularBlogOfAUserController = async function (req , res) {
+	try {
+		const blogID = req.params.blogID;
+		const blog = await Blog.findById({_id : blogID} , {
+			author : 1,
+			title : 1,
+			body : 1,
+			likes : 1
+		});
+
+		if (!blog) { 
+			return res.status(401).send({
+				success : false,
+				message : 'Blog not found'
+			});
+		}
+
+		return res.status(200).send({
+			success : true,
+			message : 'Blog fetched successfully',
+			blog
+		});
+	} catch (error) {
+		return res.status(401).send({
+			success : false,
+			message : 'Error in getParticularBlogOfAUserController Public API'
+		});
+	}
+}
+
 
 //----------------------------DELETE Controllers-------------------------//
 
@@ -149,6 +179,11 @@ const deleteBlogController = async function (req , res) {
 				message : 'Blog not found'
 			});
 		}
+
+		const username = blog.author;
+		const currentUser = await User.findOne({username});
+		currentUser.blogs.delete(blogID);
+		await currentUser.save();
 
 		await Blog.deleteOne({_id : blogID});
 		return res.status(200).send({
@@ -202,5 +237,6 @@ module.exports = {
 	likeBlogController,
 	deleteBlogController,
 	updateBlogController,
-	bookMarkBlogController
+	bookMarkBlogController,
+	getParticularBlogOfAUserController
 };
