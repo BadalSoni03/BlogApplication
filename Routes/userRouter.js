@@ -5,8 +5,23 @@ const allowedToAdmin = require('../Middlewares/allowedToAdmin');
 const {
 	getAllUsersController,
 	deleteUserController,
-	viewProfileController
+	viewProfileController,
+	forgotPasswordController,
+	resetPasswordController
 } = require('../Controllers/userController');
+
+
+//---------------------------POST APIs---------------------------//
+
+
+/*
+	@desc : sends request for forgot password 
+	@API  : Public API
+	@method : post
+	@request : http post request
+*/
+
+router.post('/account/forgot-password' , forgotPasswordController);
 
 
 //---------------------------GET APIs---------------------------//
@@ -32,6 +47,16 @@ router.get('/all-users' , allowedToAdmin , getAllUsersController);
 */
 
 router.get('/profile' , viewProfileController);
+
+/*
+	@desc : fetches all the users in the database 
+	@API  : Public API
+	@method : get
+	@request : http get request
+	@note : Allowed to admin only
+*/
+
+router.get('/account/reset-password' , resetPasswordController);
 
 
 //-------------------------DELETE APIs--------------------------//
