@@ -5,79 +5,89 @@ const User = require("../Models/User");
 //--------------------------POST Controllers-------------------------//
 
 const registerController = async function (req , res) {
-	const {username , email , password} = req.body;
-	const isNewUser = await User.newUserOrNot(email);
-	if (!isNewUser) {
-		return res.status(401).send({
-			success : false,
-			message : 'User already registered'
+	try {
+		const {username , email , password , isAdmin = false} = req.body;
+		const userFound = await User.findOne({email});
+		if (userFound) {
+			return res.status(401).send({
+				success : false,
+				message : 'User already registered'
+			});
+		}
+		const newUser = await User({
+			username,
+			email,
+			password,
+			isAdmin
 		});
-	}
-
-	const newUser = await User.create({
-		username,
-		email,
-		password
-	});
-	if (newUser) {
+		await newUser.save();
 		return res.status(201).send({
 			success : true,
 			message : 'User registered successfully',
-			newUser
+			user : newUser
 		});
-	} else {
-		return res.status(501).send({
+	} catch (error) {
+		return res.status(500).send({
 			success : false,
-			message : 'Error in register API'
-		});
+			message : 'Error in registerController Public API'
+		})
 	}
 };
 
-const loginController = async function (req , res) {
-	const {email , password} = req.body;
-	const user = await User.findOne({email});
-	if (!user) {
-		return res.status(401).send({
-			success : false,
-			message : 'User not registered'
-		});
-	}
-	const isMatch = user.comparePassword(password);
-	if (!isMatch) {
-		return res.status(401).send({
-			success : false,
-			message : 'email / password not matching',
-		});
-	}
+const loginController = async function (req , res) { 
+	try {
+		const {email , password} = req.body;
+		const user = await User.findOne({email});
+		if (!user) {
+			return res.status(401).send({
+				success : false,
+				message : 'User not registered'
+			});
+		}
+		const isMatch = await user.comparePassword(password);
+		if (!isMatch) {
+			return res.status(401).send({
+				success : false,
+				message : 'email / password not matching',
+			});
+		}
 
-	const token = JWT.sign({userId : user._id} , process.env.JWT_SECRET_KEY , {expiresIn : '1d'});
-	let oldTokens = user.tokens || [];
-	
-	if (oldTokens.length) {
-		oldTokens = oldTokens.filter(tkn => {
-			const timeDiff = (Date.now() - parseInt(tkn.signedAt)) / 1000;
-			if (timeDiff < 86400) {
-				return tkn;
-			}
+		const token = JWT.sign({userId : user._id} , process.env.JWT_SECRET_KEY , {expiresIn : '1d'});
+		let oldTokens = user.tokens || [];
+		
+		if (oldTokens.length) {
+			oldTokens = oldTokens.filter(tkn => {
+				const timeDiff = (Date.now() - parseInt(tkn.signedAt)) / 1000;
+				if (timeDiff < 86400) {
+					return tkn;
+				}
+			});
+		}
+
+		await User.findByIdAndUpdate(user._id , {
+			tokens : [...oldTokens , {
+				token,
+				signedAt : Date.now().toString()
+			}]
+		});
+		const info = {
+			Username : user.username,
+			email : user.email,
+			isAdmin : user.isAdmin,
+			token : token
+		};
+		return res.status(200).send({
+			success : true,
+			message : 'User logged in successfully',
+			info
+		});
+	} catch (error) {
+		return res.status(500).send({
+			success : false,
+			message : 'Error in loginController Public API',
+			error : error.message
 		});
 	}
-
-	await User.findByIdAndUpdate(user._id , {
-		tokens : [...oldTokens , {
-			token,
-			signedAt : Date.now().toString()
-		}]
-	});
-	const info = {
-		Username : user.username,
-		email : user.email,
-		token
-	};
-	return res.status(201).send({
-		success : true,
-		message : 'User logged in successfully',
-		info
-	});
 };
 
 const logoutController = async function (req , res) {
@@ -106,7 +116,7 @@ const logoutController = async function (req , res) {
 	} catch (error) {
 		return res.status(501).send({
 			success : false,
-			message : 'Error in logout API'
+			message : 'Error in logoutController Public API'
 		});
 	}
 };
