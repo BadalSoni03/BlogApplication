@@ -30,7 +30,11 @@ const userSchema = new mongoose.Schema({
 		of : String,
 		default : new Map()
 	},
-	tokens : [{type : Object}] 
+	tokens : [{type : Object}],
+	passwordToken : {
+		type : String,
+		default : ''
+	}
 }, 
 {
 	timespamps : true
@@ -52,24 +56,14 @@ userSchema.pre('save' , async function (next) {
 
 userSchema.methods.comparePassword = async function (enteredPassword) {
 	try {
-		return await bcrypt.compare(enteredPassword , this.password);
+		if (!enteredPassword) {
+			throw new Error('Password is missing');
+		}
+		const result = await bcrypt.compare(enteredPassword , this.password);
+		return result;
 	} catch (error) {
 		console.log('Error while comparing passwords');
 	}
 };
-
-userSchema.statics.newUserOrNot = async function (email) {
-	if (!email) throw new Error('Invalid email address');
-	try {
-		const user = await this.findOne({email});
-		if (user) {
-			return false;
-		}
-		return true;
-	} catch (error) {
-		console.log('Something went wrong in newUserOrNot method : ' + error.message);
-		return false;
-	}
-}
 
 module.exports = mongoose.model('User' , userSchema);
