@@ -114,10 +114,8 @@ const viewProfileController = async function (req , res) {
 		});
 		if (fetchedUser) {
 			const userBlogs = fetchedUser.blogs; 
-			let itr = userBlogs.keys();
-
 			const allBlogs = await Blog.find({_id : {
-				$in : itr.next().value
+				$in : Array.from(userBlogs.keys())
 			}} , {__v : 0});
 
 			return res.status(200).send({
