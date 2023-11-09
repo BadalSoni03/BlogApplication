@@ -1,8 +1,86 @@
+const bcrypt = require('bcrypt');
 const User = require('../Models/User');
 const Blog = require('../Models/Blog');
+const sendResetPasswordMail = require('../Utils/sendMail');
+const generateToken = require('../Utils/generateToken')
+
+
+//----------------------------POST Controllers------------------------//
+
+
+const forgotPasswordController = async function (req , res) {
+	try {
+		const userEmail = req.body.email;
+		const userFound = await User.findOne({email : userEmail});
+		if (!userFound) {
+			return res.status(400).send({
+				success : false,
+				message : 'User not found'
+			});
+		}
+		const token = generateToken();
+		await User.updateOne({email : userEmail} , {
+			$set : {
+				passwordToken : token
+			}
+		});
+		const info = await sendResetPasswordMail(userFound.username , userEmail , token);
+		if (info === 'Error while sending the mail') {
+			return res.status(500).send({
+				success : false,
+				message : 'Error while sending the mail'
+			});
+		}
+		return res.status(200).send({
+			success : true,
+			message : 'Reset password mail has been sent to your account , please check your inbox or spam folder'
+		});
+	} catch (error) {
+		return res.status(500).send({
+			success : false,
+			message : 'Error in forgotPasswordController Public API',
+			error : error.message
+		});
+	}
+}
+
 
 
 //----------------------------GET Controllers-------------------------//
+
+
+const resetPasswordController = async function (req , res) {
+	try {
+		const newPassword = req.body.password;
+		const token = req.query.token;
+		const user = await User.findOne({passwordToken : token});
+		if (!user) {
+			return res.status(400).send({
+				success : false,
+				message : 'Link has been expired'
+			});
+		}
+		const salt = await bcrypt.genSalt(10);
+		const hashedPassword = await bcrypt.hash(newPassword , salt);
+		
+		await User.findByIdAndUpdate({_id : user._id} , {
+			$set : {
+				password : hashedPassword,
+				passwordToken : ''
+			}
+		} , {new : true});
+		return res.status(200).send({
+			success : true,
+			message : 'Password reset successfull'
+		});
+	} catch (error) {
+		return res.status(500).send({
+			success : false,
+			message : 'Error in resetPasswordController Public API',
+			error : error.message
+		});
+	}
+};
 
 const getAllUsersController = async function (req , res) {
 	try {
@@ -30,15 +108,25 @@ const viewProfileController = async function (req , res) {
 	try {
 		const username = req.body.username;
 		const fetchedUser = await User.findOne({username} , {
-			username : 1,
-			email : 1,
-			blogs : 1
+			__v : 0,
+			createAt : 0,
+			updatedAt : 0
 		});
 		if (fetchedUser) {
+			const userBlogs = fetchedUser.blogs; 
+			let itr = userBlogs.keys();
+
+			const allBlogs = await Blog.find({_id : {
+				$in : itr.next().value
+			}} , {__v : 0});
+
 			return res.status(200).send({
 				success : true,
 				message : 'User fetched successfully',
-				user : fetchedUser
+				username : fetchedUser.username,
+				email : fetchedUser.email,
+				blogsCount : userBlogs.size,
+				allBlogs : allBlogs
 			});
 		} 
 		return res.status(401).send({
@@ -89,5 +177,7 @@ const deleteUserController = async function (req , res) {
 module.exports = {
 	getAllUsersController,
 	deleteUserController,
-	viewProfileController
+	viewProfileController,
+	forgotPasswordController,
+	resetPasswordController
 };
