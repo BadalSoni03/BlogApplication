@@ -8,15 +8,17 @@ const userRouter = require('./Routes/userRouter');
 dotenv.config();
 connectToDB()
 
-const port = process.env.port || 8080;
-const app = express(); 
+const port = process.env.PORT || 8080;
+const host = process.env.HOST;
+const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.listen(port , () => {
-	console.log("Server is running on http://localhost:" + port);
-});
 
+app.listen(port , () => {
+	const baseURL = 'http://' + host + ':' + port;
+	console.log("Node Server is running on " + baseURL);
+});
 
 app.use('/auth' , authRouter);
 app.use('/blog' , blogRouter);
