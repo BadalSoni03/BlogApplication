@@ -84,11 +84,21 @@ const resetPasswordController = async function (req , res) {
 
 const getAllUsersController = async function (req , res) {
 	try {
+		let {page , size} = req.query;
+		if (!page) {
+			page = 1;
+		}
+		if (!size) {
+			size = 1;
+		}
+		const limit = parseInt(size);
+		const skip = (page - 1) * size;
 		const allUsers = await User.find({} , {
 			username : 1,
 			email : 1,
 			blogs : 1
-		}); 
+		}).limit(limit).skip(skip); 
+
 		return res.status(200).send({
 			success : true,
 			message : 'User fetched successfully',
