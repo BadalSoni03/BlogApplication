@@ -1,5 +1,7 @@
 const Blog = require('../Models/Blog');
 const User = require('../Models/User');
+const NodeCache = require('node-cache');
+const nodeCache = new NodeCache();
 
 
 //--------------------------POST Controllers-------------------------//
@@ -25,6 +27,8 @@ const createBlogController = async function (req , res) {
 
 		currentUser.blogs.set(blog._id , '1');
 		await currentUser.save();
+
+		nodeCache.del("blogs");
 		return res.status(201).send({
 			success : true,
 			message : 'Blog created successfully',
@@ -58,6 +62,8 @@ const likeBlogController = async function (req , res) {
 		}
 		blog.likes = likedBlogs;
 		await blog.save();
+
+		nodeCache.del("blogs");
 		return res.status(201).send({
 			success : true,
 			message : 'Liked successfully',
@@ -105,8 +111,35 @@ const bookMarkBlogController = async function (req , res) {
 
 //----------------------------GET Controllers-------------------------//
 
+
+const getAllBlogsController = async function (req , res) {
+	try {
+		let blogs = "";
+		if (nodeCache.has("blogs")) {
+			blogs = JSON.parse(nodeCache.get("blogs"));
+		} else {
+			blogs = await Blog.find();
+			nodeCache.set("blogs" , JSON.stringify(blogs));
+		}
+
+		return res.status(200).send({
+			success : true,
+			message : 'Blogs fetched successfully',
+			blogs
+		})
+
+	} catch (error) {
+		return res.status(501).send({
+			success : false,
+			message : 'Error in getBlogsController Public API',
+			error : error.message
+		});
+	}
+}
+
 const getAllBlogsOfAUserController = async function (req , res) {
 	try {
+		let {page , size} = req.query;
 		const username = req.params.username;
 		const userFound = await User.findOne({username});
 		if (!userFound) {
@@ -116,12 +149,23 @@ const getAllBlogsOfAUserController = async function (req , res) {
 			});
 		}
 
+		if (!page) {
+			page = 1;
+		}
+		if (!size) {
+			size = 10;
+		}
+
+		const limit = parseInt(size);
+		const skip = (page - 1) * size;
+
 		const allBlogs = await Blog.find({author : username} , {
 			author : 1,
 			title : 1,
 			body : 1,
 			likes : 1
-		}); 
+		}).limit(limit).skip(skip); 
+		
 		return res.status(200).send({
 			success : true,
 			message : 'Blogs fetched successfully',
@@ -186,6 +230,8 @@ const deleteBlogController = async function (req , res) {
 		await currentUser.save();
 
 		await Blog.deleteOne({_id : blogID});
+		
+		nodeCache.del("blogs");
 		return res.status(200).send({
 			success : true,
 			message : 'Blog deleted successfully'
@@ -216,6 +262,8 @@ const updateBlogController = async function (req , res) {
 				message : 'Blog not found'
 			});
 		}
+
+		nodeCache.del("blogs");
 		return res.status(200).send({
 			success : true,
 			message : 'Blog updated successfully',
@@ -238,5 +286,6 @@ module.exports = {
 	deleteBlogController,
 	updateBlogController,
 	bookMarkBlogController,
-	getParticularBlogOfAUserController
+	getParticularBlogOfAUserController,
+	getAllBlogsController
 };
