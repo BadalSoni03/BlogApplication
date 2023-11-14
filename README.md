@@ -1,7 +1,8 @@
 # BlogApplication
 
-This is the RESTful API of blog application. It has all the features which a blog application possess excluding the media posting (images and videos) and files. It is ready to use with any front-end after configuring some dependencies. All the end points are tested.
+This is the RESTful API of blog application. It has all the features which a blog application possess excluding the media posting (images and videos) and files. It is ready to use with any front-end after configuring some dependencies. Caching and paginations are also implemented in this project. All the end points are tested.
 
+## [Link to the Postman Documentation](https://documenter.getpostman.com/view/29991438/2s9YXmY1AG)
 ## Authentication
 
         root end - point : /auth
