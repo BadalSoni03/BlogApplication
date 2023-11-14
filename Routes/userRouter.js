@@ -19,7 +19,6 @@ const {
 	@API  : Public API
 	@method : post
 	@request : http post request
-        @note : no auth middleware is required
 */
 
 router.post('/account/forgot-password' , forgotPasswordController);
@@ -50,11 +49,11 @@ router.get('/all-users' , allowedToAdmin , getAllUsersController);
 router.get('/profile' , viewProfileController);
 
 /*
-	@desc : resets the password 
+	@desc : fetches all the users in the database 
 	@API  : Public API
 	@method : get
 	@request : http get request
-	@note : no middleware is required
+	@note : Allowed to admin only
 */
 
 router.get('/account/reset-password' , resetPasswordController);
